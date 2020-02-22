@@ -9,8 +9,9 @@ defmodule MemeCacheBot.Bot do
   middleware(ExGram.Middleware.IgnoreUsername)
   middleware(MemeCacheBot.Middlewares.RegisterUser)
 
-  alias ExGram.Model.InlineQueryResultCachedSticker
-  alias ExGram.Model.InlineQueryResultCachedPhoto
+  alias MemeCacheBot.Model.Meme
+  alias MemeCacheBot.MessageFormatter
+  alias MemeCacheBot.Utils
 
   def bot(), do: @bot
 
@@ -22,14 +23,18 @@ defmodule MemeCacheBot.Bot do
     answer(context, "Which meme do you want to cache?")
   end
 
-  def handle({:message, %{photo: photos}}, context) do
-    Logger.debug("MEEEH #{inspect(photos)}")
-    answer(context, "Photo received")
+  def handle({:message, %{photo: [%{file_id: meme_id} | _], from: %{id: user_id}}}, context) do
+    case save_meme(user_id, meme_id, "photo") do
+      :ok -> answer(context, "Photo meme saved!")
+      _ -> answer(context, "Photo meme could not be saved :(")
+    end
   end
 
-  def handle({:message, %{sticker: sticker}}, context) do
-    Logger.debug("MEEEH #{inspect(sticker)}")
-    answer(context, "Sticker received")
+  def handle({:message, %{sticker: %{file_id: meme_id}, from: %{id: user_id}}}, context) do
+    case save_meme(user_id, meme_id, "sticker") do
+      :ok -> answer(context, "Sticker meme saved!")
+      _ -> answer(context, "Sticker meme could not be saved :(")
+    end
   end
 
   def handle({:message, m}, context) do
@@ -37,21 +42,32 @@ defmodule MemeCacheBot.Bot do
     answer(context, "Meh")
   end
 
-  def handle({:inline_query, %{query: _text}}, context) do
-    articles = [
-      %InlineQueryResultCachedSticker{
-        type: "sticker",
-        id: "1",
-        sticker_file_id: "CAACAgQAAxkBAAIYK15QOqKWcVlEy58rOb2NAZPPqHtLAAK2AAMNpCQAAfLcVSn4p-yvGAQ"
-      },
-      %InlineQueryResultCachedPhoto{
-        type: "photo",
-        id: "2",
-        photo_file_id:
-          "AgACAgQAAxkBAAIYKV5QOmm48Gg9_4bLPSqqcD7X6I7qAAJZsTEbLWSAUpti2Y6sVsTmR1ioGwAEAQADAgADbQAD8z4IAAEYBA"
-      }
-    ]
+  def handle({:inline_query, %{query: _text, from: %{id: user_id}}}, context) do
+    with {:ok, memes} <- Meme.get_memes_by_user(user_id),
+         articles =
+           Enum.map(memes, &MessageFormatter.get_inline_result/1)
+           |> Enum.filter(&(&1 !== :invalid_meme)) do
+      answer_inline_query(context, articles)
+    else
+      err -> Logger.error("Error while getting memes #{err}")
+    end
+  end
 
-    answer_inline_query(context, articles)
+  # Private
+  defp save_meme(telegram_id, meme_id, meme_type) do
+    case Meme.insert(%{
+           meme_id: meme_id,
+           telegram_id: telegram_id,
+           meme_type: meme_type,
+           last_used: Utils.date_now()
+         }) do
+      {:ok, meme} ->
+        Logger.debug("Meme saved: #{inspect(meme)}")
+        :ok
+
+      err ->
+        Logger.error("Could not save meme: #{inspect(err)}")
+        :error
+    end
   end
 end
