@@ -10,6 +10,7 @@ defmodule MemeCacheBot.Application do
 
     children = [
       MemeCacheBot.Repo,
+      MemeCacheBot.Steps,
       ExGram,
       {MemeCacheBot.Bot, [method: :polling, token: token]}
     ]
