@@ -34,7 +34,8 @@ defmodule MemeCacheBot.Bot do
   def handle({:message, %{from: %{id: user_id}} = message}, context) do
     with {:ok, meme_id, meme_unique_id, meme_type} <- Utils.get_meme_from_message(message),
          {:ok, step} <- Steps.extract_step(user_id),
-         {:ok, _} <- MemeManager.manage_meme(user_id, meme_id, meme_unique_id, meme_type, step) do
+         {:ok, _} <-
+           MemeManager.manage_meme(user_id, meme_id, meme_unique_id, meme_type, step) do
       Logger.debug("""
       Meme detected ->
         Type: #{inspect(meme_type)}
@@ -46,6 +47,9 @@ defmodule MemeCacheBot.Bot do
 
       answer(context, "Meme #{Atom.to_string(step)}d!")
     else
+      {:error, :already_cached} ->
+        answer(context, "That meme was already cached!")
+
       {:error, :no_step} ->
         answer(context, "What do you mean? Do you want to /cache or /delete a meme?")
 

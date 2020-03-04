@@ -13,6 +13,11 @@ defmodule MemeCacheBot.Repo.Migrations.CreateMemesTable do
       timestamps()
     end
 
-    create(unique_index(:memes, [:meme_id, :telegram_id], name: :meme_telegram_index))
+    create(
+      index(:memes, [:meme_id, :meme_unique_id, :telegram_id],
+        name: :meme_telegram_index,
+        unique: true
+      )
+    )
   end
 end

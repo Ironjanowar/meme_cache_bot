@@ -12,6 +12,9 @@ defmodule MemeCacheBot.MemeManager do
            meme_type: meme_type,
            last_used: Utils.date_now()
          }) do
+      {:error, :already_cached} = ok ->
+        ok
+
       {:ok, meme} ->
         Logger.debug("Meme cached: #{inspect(meme)}")
         {:ok, :meme_cached}

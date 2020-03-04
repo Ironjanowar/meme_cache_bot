@@ -26,21 +26,35 @@ defmodule MemeCacheBot.Model.Meme do
     users
     |> cast(attrs, [:meme_id, :meme_unique_id, :telegram_id, :meme_type, :last_used])
     |> validate_required([:meme_id, :meme_unique_id, :telegram_id, :meme_type, :last_used])
+    |> unique_constraint(:meme_telegram_index)
   end
 
   def insert(meme_params) do
     changeset = changeset(%Meme{}, meme_params)
 
     if changeset.valid? do
-      Repo.insert(changeset)
+      case get_meme_by_user_and_id(meme_params.telegram_id, meme_params.meme_unique_id) do
+        {:ok, nil} ->
+          Repo.insert(changeset)
+
+        {:ok, _} ->
+          {:ok, :already_cached}
+      end
     else
       {:error, changeset.errors}
     end
   end
 
-  def get_memes_by_user(user_id) do
-    q = from(m in Meme, where: m.telegram_id == ^user_id, order_by: m.last_used)
+  def get_memes_by_user(telegram_id) do
+    q = from(m in Meme, where: m.telegram_id == ^telegram_id, order_by: m.last_used)
     {:ok, Repo.all(q)}
+  end
+
+  def get_meme_by_user_and_id(telegram_id, meme_unique_id) do
+    q =
+      from(m in Meme, where: m.telegram_id == ^telegram_id and m.meme_unique_id == ^meme_unique_id)
+
+    {:ok, Repo.one(q)}
   end
 
   def delete_meme(telegram_id, meme_unique_id) do
