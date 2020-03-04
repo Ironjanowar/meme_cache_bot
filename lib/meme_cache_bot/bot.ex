@@ -32,18 +32,19 @@ defmodule MemeCacheBot.Bot do
   end
 
   def handle({:message, %{from: %{id: user_id}} = message}, context) do
-    with {:ok, meme_id, meme_type} <- Utils.get_meme_from_message(message),
+    with {:ok, meme_id, meme_unique_id, meme_type} <- Utils.get_meme_from_message(message),
          {:ok, step} <- Steps.extract_step(user_id),
-         {:ok, _} <- MemeManager.manage_meme(user_id, meme_id, meme_type, step) do
+         {:ok, _} <- MemeManager.manage_meme(user_id, meme_id, meme_unique_id, meme_type, step) do
       Logger.debug("""
       Meme detected ->
         Type: #{inspect(meme_type)}
         User: #{inspect(user_id)}
         Meme ID: #{inspect(meme_id)}
+        Meme Unique ID: #{inspect(meme_unique_id)}
         Action done: #{inspect(step)}
       """)
 
-      answer(context, "Meme saved!")
+      answer(context, "Meme #{Atom.to_string(step)}d!")
     else
       {:error, :no_step} ->
         answer(context, "What do you mean? Do you want to /cache or /delete a meme?")

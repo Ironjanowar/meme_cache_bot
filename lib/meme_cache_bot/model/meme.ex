@@ -13,6 +13,7 @@ defmodule MemeCacheBot.Model.Meme do
   @foreign_key_type :binary_id
   schema "memes" do
     field(:meme_id, :string)
+    field(:meme_unique_id, :string)
     field(:telegram_id, :integer)
     field(:meme_type, :string)
     field(:last_used, :naive_datetime)
@@ -23,8 +24,8 @@ defmodule MemeCacheBot.Model.Meme do
   @doc false
   def changeset(users, attrs) do
     users
-    |> cast(attrs, [:meme_id, :telegram_id, :meme_type, :last_used])
-    |> validate_required([:meme_id, :telegram_id, :meme_type, :last_used])
+    |> cast(attrs, [:meme_id, :meme_unique_id, :telegram_id, :meme_type, :last_used])
+    |> validate_required([:meme_id, :meme_unique_id, :telegram_id, :meme_type, :last_used])
   end
 
   def insert(meme_params) do
@@ -42,8 +43,9 @@ defmodule MemeCacheBot.Model.Meme do
     {:ok, Repo.all(q)}
   end
 
-  def delete_meme(telegram_id, meme_id) do
-    q = from(m in Meme, where: m.telegram_id == ^telegram_id and m.meme_id == ^meme_id)
+  def delete_meme(telegram_id, meme_unique_id) do
+    q =
+      from(m in Meme, where: m.telegram_id == ^telegram_id and m.meme_unique_id == ^meme_unique_id)
 
     case Repo.delete_all(q) do
       {0, _} = result ->

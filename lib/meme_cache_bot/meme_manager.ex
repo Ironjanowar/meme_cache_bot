@@ -4,15 +4,16 @@ defmodule MemeCacheBot.MemeManager do
 
   require Logger
 
-  def cache_meme(telegram_id, meme_id, meme_type) do
+  def cache_meme(telegram_id, meme_id, meme_unique_id, meme_type) do
     case Meme.insert(%{
            meme_id: meme_id,
+           meme_unique_id: meme_unique_id,
            telegram_id: telegram_id,
            meme_type: meme_type,
            last_used: Utils.date_now()
          }) do
       {:ok, meme} ->
-        Logger.debug("Meme cd: #{inspect(meme)}")
+        Logger.debug("Meme cached: #{inspect(meme)}")
         {:ok, :meme_cached}
 
       err ->
@@ -33,9 +34,9 @@ defmodule MemeCacheBot.MemeManager do
     end
   end
 
-  def manage_meme(telegram_id, meme_id, meme_type, :cache),
-    do: cache_meme(telegram_id, meme_id, meme_type)
+  def manage_meme(telegram_id, meme_id, meme_unique_id, meme_type, :cache),
+    do: cache_meme(telegram_id, meme_id, meme_unique_id, meme_type)
 
-  def manage_meme(telegram_id, meme_id, _meme_type, :delete),
-    do: delete_meme(telegram_id, meme_id)
+  def manage_meme(telegram_id, _meme_id, meme_unique_id, _meme_type, :delete),
+    do: delete_meme(telegram_id, meme_unique_id)
 end
