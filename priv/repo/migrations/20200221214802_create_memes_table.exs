@@ -14,7 +14,7 @@ defmodule MemeCacheBot.Repo.Migrations.CreateMemesTable do
     end
 
     create(
-      index(:memes, [:meme_id, :meme_unique_id, :telegram_id],
+      index(:memes, [:meme_unique_id, :telegram_id],
         name: :meme_telegram_index,
         unique: true
       )
