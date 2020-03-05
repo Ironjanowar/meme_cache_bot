@@ -3,9 +3,17 @@ defmodule MemeCacheBot.MessageFormatter do
 
   alias ExGram.Model.InlineQueryResultCachedSticker
   alias ExGram.Model.InlineQueryResultCachedPhoto
+  alias ExGram.Model.InlineQueryResultCachedGif
 
   def get_inline_result(meme) do
     case meme.meme_type do
+      "gif" ->
+        %InlineQueryResultCachedGif{
+          type: meme.meme_type,
+          id: meme.id,
+          gif_file_id: meme.meme_id
+        }
+
       "photo" ->
         %InlineQueryResultCachedPhoto{
           type: meme.meme_type,
