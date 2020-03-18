@@ -35,7 +35,8 @@ defmodule MemeCacheBot.MessageFormatter do
         %InlineQueryResultCachedVideo{
           type: meme.meme_type,
           id: meme.id,
-          video_file_id: meme.meme_id
+          video_file_id: meme.meme_id,
+          title: "Meme"
         }
 
       _ ->
