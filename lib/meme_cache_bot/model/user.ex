@@ -21,7 +21,7 @@ defmodule MemeCacheBot.Model.User do
   def changeset(users, attrs) do
     users
     |> cast(attrs, [:telegram_id, :first_name, :username])
-    |> validate_required([:telegram_id, :first_name, :username])
+    |> validate_required([:telegram_id, :first_name])
   end
 
   def insert(user_params) do
