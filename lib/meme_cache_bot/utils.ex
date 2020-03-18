@@ -12,7 +12,11 @@ defmodule MemeCacheBot.Utils do
   def get_meme_from_message(%{sticker: %{file_unique_id: meme_unique_id, file_id: meme_id}}),
     do: {:ok, meme_id, meme_unique_id, "sticker"}
 
+  def get_meme_from_message(%{video: %{file_unique_id: meme_unique_id, file_id: meme_id}}),
+    do: {:ok, meme_id, meme_unique_id, "video"}
+
   def get_meme_from_message(message) do
     Logger.debug("Unrecognized meme: #{inspect(message)}")
+    {:error, :no_meme, message}
   end
 end

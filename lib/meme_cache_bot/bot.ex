@@ -59,6 +59,14 @@ defmodule MemeCacheBot.Bot do
       {:error, :could_not_delete} ->
         answer(context, "Sorry I could not delete your meme :(")
 
+      {:error, :no_meme, message} ->
+        Logger.error("""
+        Unrecognized meme on message:
+          Message: #{inspect(message)}
+        """)
+
+        answer(context, "Sorry I don't recognize that as a meme :(")
+
       error ->
         Logger.error("""
         Error while processing a message ->

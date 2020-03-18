@@ -1,9 +1,12 @@
 defmodule MemeCacheBot.MessageFormatter do
   require Logger
 
-  alias ExGram.Model.InlineQueryResultCachedSticker
-  alias ExGram.Model.InlineQueryResultCachedPhoto
-  alias ExGram.Model.InlineQueryResultCachedGif
+  alias ExGram.Model.{
+    InlineQueryResultCachedSticker,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedGif,
+    InlineQueryResultCachedVideo
+  }
 
   def get_inline_result(meme) do
     case meme.meme_type do
@@ -26,6 +29,13 @@ defmodule MemeCacheBot.MessageFormatter do
           type: meme.meme_type,
           id: meme.id,
           sticker_file_id: meme.meme_id
+        }
+
+      "video" ->
+        %InlineQueryResultCachedVideo{
+          type: meme.meme_type,
+          id: meme.id,
+          video_file_id: meme.meme_id
         }
 
       _ ->
