@@ -87,7 +87,7 @@ defmodule MemeCacheBot.Bot do
          articles =
            Enum.map(memes, &MessageFormatter.get_inline_result/1)
            |> Enum.filter(&(&1 !== :invalid_meme)) do
-      answer_inline_query(context, articles)
+      answer_inline_query(context, articles, is_personal: true)
     else
       err -> Logger.error("Error while getting memes #{err}")
     end
