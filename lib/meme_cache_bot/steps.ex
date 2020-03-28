@@ -10,7 +10,7 @@ defmodule MemeCacheBot.Steps do
   end
 
   # Client API
-  def start_link() do
+  def start_link do
     GenServer.start_link(__MODULE__, :ok, name: __MODULE__)
   end
 
@@ -20,6 +20,10 @@ defmodule MemeCacheBot.Steps do
 
   def get_step(user_id) do
     GenServer.call(__MODULE__, {:get_step, user_id})
+  end
+
+  def extract_step(user_id) when is_binary(user_id) do
+    user_id |> String.to_integer() |> extract_step()
   end
 
   def extract_step(user_id) do

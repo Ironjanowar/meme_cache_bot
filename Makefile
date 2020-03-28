@@ -49,4 +49,7 @@ db_reset: compile
 	mix ecto.create
 	mix ecto.migrate
 
-.PHONY: deps compile release start clean purge token iex stop attach debug db_setup db_reset
+code_check: compile
+	mix credo --strict
+
+.PHONY: deps compile release start clean purge token iex stop attach debug db_setup db_reset code_check

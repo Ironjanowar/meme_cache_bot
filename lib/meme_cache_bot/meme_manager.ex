@@ -1,10 +1,15 @@
 defmodule MemeCacheBot.MemeManager do
-  alias MemeCacheBot.Utils
   alias MemeCacheBot.Model.Meme
+  alias MemeCacheBot.Utils
 
   require Logger
 
-  def cache_meme(telegram_id, meme_id, meme_unique_id, meme_type) do
+  def cache_meme(%{
+        user_id: telegram_id,
+        meme_id: meme_id,
+        meme_unique_id: meme_unique_id,
+        meme_type: meme_type
+      }) do
     case Meme.insert(%{
            meme_id: meme_id,
            meme_unique_id: meme_unique_id,
@@ -25,21 +30,27 @@ defmodule MemeCacheBot.MemeManager do
     end
   end
 
-  def delete_meme(telegram_id, meme_id) do
-    case Meme.delete_meme(telegram_id, meme_id) do
+  def delete_meme(%{
+        user_id: telegram_id,
+        meme_unique_id: meme_unique_id
+      }) do
+    case Meme.delete_meme(telegram_id, meme_unique_id) do
       {:ok, :meme_deleted} ->
-        Logger.debug("Deleted meme: #{inspect(meme_id)}")
+        Logger.debug("Deleted meme: #{inspect(meme_unique_id)}")
         {:ok, :meme_deleted}
 
       _ ->
-        Logger.debug("Could not delete meme #{inspect(meme_id)} for user #{inspect(telegram_id)}")
+        Logger.debug(
+          "Could not delete meme #{inspect(meme_unique_id)} for user #{inspect(telegram_id)}"
+        )
+
         {:error, :could_not_delete}
     end
   end
 
-  def manage_meme(telegram_id, meme_id, meme_unique_id, meme_type, :cache),
-    do: cache_meme(telegram_id, meme_id, meme_unique_id, meme_type)
+  def manage_meme(meme_info, "cache"),
+    do: cache_meme(meme_info)
 
-  def manage_meme(telegram_id, _meme_id, meme_unique_id, _meme_type, :delete),
-    do: delete_meme(telegram_id, meme_unique_id)
+  def manage_meme(meme_info, "delete"),
+    do: delete_meme(meme_info)
 end
