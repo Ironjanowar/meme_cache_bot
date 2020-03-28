@@ -2,9 +2,9 @@ defmodule MemeCacheBot.MessageFormatter do
   require Logger
 
   alias ExGram.Model.{
-    InlineQueryResultCachedSticker,
-    InlineQueryResultCachedPhoto,
     InlineQueryResultCachedGif,
+    InlineQueryResultCachedPhoto,
+    InlineQueryResultCachedSticker,
     InlineQueryResultCachedVideo
   }
 
@@ -18,14 +18,15 @@ defmodule MemeCacheBot.MessageFormatter do
   defp type_struct(invalid_type), do: {:error, :invalid_type, invalid_type}
 
   def get_inline_result(meme) do
-    with {:ok, struct_module, file_param, extras} <- type_struct(meme.meme_type) do
-      params =
-        %{type: meme.meme_type, id: meme.id}
-        |> Map.put(file_param, meme.meme_id)
-        |> Map.merge(extras)
+    case type_struct(meme.meme_type) do
+      {:ok, struct_module, file_param, extras} ->
+        params =
+          %{type: meme.meme_type, id: meme.id}
+          |> Map.put(file_param, meme.meme_id)
+          |> Map.merge(extras)
 
-      struct(struct_module, params)
-    else
+        struct(struct_module, params)
+
       err ->
         Logger.error("""
         Invalid meme type #{inspect(meme.meme_type)}:
