@@ -29,7 +29,8 @@ defmodule MemeCacheBot.MixProject do
       {:logger_file_backend, "0.0.11"},
       {:ecto_sql, "~> 3.0"},
       {:postgrex, ">= 0.0.0"},
-      {:credo, "~> 1.2", only: [:dev, :test], runtime: false}
+      {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
+      {:uuid, "~> 1.1"}
     ]
   end
 end

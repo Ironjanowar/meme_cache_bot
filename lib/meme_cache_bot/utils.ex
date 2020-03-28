@@ -23,6 +23,6 @@ defmodule MemeCacheBot.Utils do
   def generate_buttons(user_id, :cache),
     do: ExGram.Dsl.create_inline([[[text: "Yes", callback_data: "cache:#{user_id}"]]])
 
-  def generate_buttons(user_id, :delete),
-    do: ExGram.Dsl.create_inline([[[text: "Yes", callback_data: "delete:#{user_id}"]]])
+  def generate_buttons(meme_uuid, :delete),
+    do: ExGram.Dsl.create_inline([[[text: "Yes", callback_data: "delete:#{meme_uuid}"]]])
 end

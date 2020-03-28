@@ -21,17 +21,7 @@ defmodule MemeCacheBot.Bot do
     answer(context, "Hi!")
   end
 
-  def handle({:command, "cache", %{from: %{id: user_id}}}, context) do
-    Steps.add_step(user_id, :cache)
-    answer(context, "Which meme do you want to cache?")
-  end
-
-  def handle({:command, "delete", %{from: %{id: user_id}}}, context) do
-    Steps.add_step(user_id, :delete)
-    answer(context, "Which meme do you want to delete?")
-  end
-
-  def handle({:message, %{from: %{id: user_id}} = message}, context) do
+  def handle({:message, %{from: %{id: user_id}, message_id: message_id} = message}, context) do
     with {:ok, meme_id, meme_unique_id, meme_type} <- Utils.get_meme_from_message(message),
          {{:ok, %Meme{}}, meme_info} <-
            {Meme.get_meme_by_user_and_id(user_id, meme_unique_id),
@@ -41,18 +31,22 @@ defmodule MemeCacheBot.Bot do
               meme_unique_id: meme_unique_id,
               meme_type: meme_type
             }} do
-      Steps.add_step(user_id, meme_info)
-      markup = Utils.generate_buttons(user_id, :delete)
+      {:ok, uuid} = Steps.add_step(meme_info)
+      markup = Utils.generate_buttons(uuid, :delete)
 
       answer(context, "You already have that meme saved, do you want to delete it?",
-        reply_markup: markup
+        reply_markup: markup,
+        reply_to_message_id: message_id
       )
     else
       {{:ok, nil}, meme_info} ->
-        Steps.add_step(user_id, meme_info)
-        markup = Utils.generate_buttons(user_id, :cache)
+        {:ok, uuid} = Steps.add_step(meme_info)
+        markup = Utils.generate_buttons(uuid, :cache)
 
-        answer(context, "Do you want to save this meme?", reply_markup: markup)
+        answer(context, "Do you want to save this meme?",
+          reply_markup: markup,
+          reply_to_message_id: message_id
+        )
 
       {:error, :no_meme, message} ->
         Logger.error("""
@@ -60,7 +54,9 @@ defmodule MemeCacheBot.Bot do
           Message: #{inspect(message)}
         """)
 
-        answer(context, "Sorry I don't recognize that as a meme :(")
+        answer(context, "Sorry I don't recognize that as a meme :(",
+          reply_to_message_id: message_id
+        )
 
       error ->
         Logger.error("""
@@ -91,22 +87,29 @@ defmodule MemeCacheBot.Bot do
     end
   end
 
-  def handle({:callback_query, %{data: data} = message}, context) do
+  def handle(
+        {:callback_query, %{data: data, message: %{message_id: message_id}} = message},
+        context
+      ) do
     Logger.debug("message: #{inspect(message)}")
 
-    with [action, user_id] <- String.split(data, ":"),
-         {:ok, meme_info} <- Steps.extract_step(user_id),
+    with [action, uuid] <- String.split(data, ":"),
+         {:ok, meme_info} <- Steps.get_step(uuid),
          {:ok, _} <- MemeManager.manage_meme(meme_info, action) do
-      edit(context, :inline, "Meme #{action}d!")
+      edit(context, :inline, "Meme #{action}d!", reply_to_message_id: message_id)
     else
       {:error, :already_cached} ->
-        edit(context, :inline, "That meme was already cached!")
+        edit(context, :inline, "That meme was already cached!", reply_to_message_id: message_id)
 
       {:error, :could_not_cache} ->
-        edit(context, :inline, "Sorry I could not save your meme :(")
+        edit(context, :inline, "Sorry I could not save your meme :(",
+          reply_to_message_id: message_id
+        )
 
       {:error, :could_not_delete} ->
-        edit(context, :inline, "Sorry I could not delete your meme :(")
+        edit(context, :inline, "Sorry I could not delete your meme :(",
+          reply_to_message_id: message_id
+        )
 
       error ->
         Logger.error("""
