@@ -5,7 +5,7 @@ defmodule MemeCacheBot.Model.Meme do
   import Ecto.Query
 
   alias __MODULE__
-  alias MemeCacheBot.Repo
+  alias MemeCacheBot.{Repo, Utils}
 
   require Logger
 
@@ -46,7 +46,7 @@ defmodule MemeCacheBot.Model.Meme do
   end
 
   def get_memes_by_user(telegram_id) do
-    q = from(m in Meme, where: m.telegram_id == ^telegram_id, order_by: m.last_used)
+    q = from(m in Meme, where: m.telegram_id == ^telegram_id, order_by: [desc: m.last_used])
     {:ok, Repo.all(q)}
   end
 
@@ -70,5 +70,10 @@ defmodule MemeCacheBot.Model.Meme do
         Logger.debug("DELETE result\n#{inspect(result)}")
         {:ok, :meme_deleted}
     end
+  end
+
+  def update_last_used(telegram_id, meme_unique_id) do
+    from(m in Meme, where: m.telegram_id == ^telegram_id and m.meme_unique_id == ^meme_unique_id)
+    |> Repo.update_all(set: [last_used: Utils.date_now()])
   end
 end

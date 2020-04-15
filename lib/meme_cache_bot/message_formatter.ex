@@ -21,7 +21,7 @@ defmodule MemeCacheBot.MessageFormatter do
     case type_struct(meme.meme_type) do
       {:ok, struct_module, file_param, extras} ->
         params =
-          %{type: meme.meme_type, id: meme.id}
+          %{type: meme.meme_type, id: meme.meme_unique_id}
           |> Map.put(file_param, meme.meme_id)
           |> Map.merge(extras)
 

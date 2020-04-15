@@ -122,6 +122,13 @@ defmodule MemeCacheBot.Bot do
     end
   end
 
+  def handle(
+        {:update, %{chosen_inline_result: %{from: %{id: user_id}, result_id: meme_unique_id}}},
+        _
+      ) do
+    Meme.update_last_used(user_id, meme_unique_id)
+  end
+
   def handle(_, _), do: :ignore
   def handle(_), do: :ignore
 end
