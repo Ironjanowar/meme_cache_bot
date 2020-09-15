@@ -1,21 +1,30 @@
 # MemeCacheBot
 
-**TODO: Add description**
+## Use of the `@meme_cache_bot`
 
-## Installation
+Just start a conversation with `@meme_cache_bot` in Telegram.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `meme_cache_bot` to your list of dependencies in `mix.exs`:
+Send a meme in any of these formats:
+ - Sticker
+ - GIF
+ - Photo
+ - Video
 
-```elixir
-def deps do
-  [
-    {:meme_cache_bot, "~> 0.1.0"}
-  ]
-end
-```
+If you don't have the meme saved, the bot will ask if you want to save it
+![Save Button][./docs/images/save_button.png]
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/meme_cache_bot](https://hexdocs.pm/meme_cache_bot).
+If you have the meme saved, the bot will ask if you want to delete it
+![Delete Button][./docs/images/delete_button.png]
 
+## Deploy your own meme bot
+
+- Create a `bot.token` file with a bot token in the root of the project
+- Compile the bot executing `make compile`
+- Create and migrate a database with `make db_setup`, check the `config/config.exs` file to set up your own database
+- Execute the bot opening an `iex` interpreter with `make iex`
+- (Optional) Create a release with `make release`
+- (Optional) Execute the release with `make start` and stop it with `make stop`
+
+The logs will be written into files, to see the logs execute:
+ - `make debug_logs` to show all the logs
+ - `make error_logs` to show error level logs only

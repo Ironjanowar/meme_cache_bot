@@ -21,6 +21,14 @@ defmodule MemeCacheBot.Bot do
     answer(context, "Hi!")
   end
 
+  def handle({:command, "help", _msg}, context) do
+    answer(context, Utils.help_command())
+  end
+
+  def handle({:command, "about", _msg}, context) do
+    answer(context, Utils.about_command(), parse_mode: "Markdown")
+  end
+
   def handle({:message, %{from: %{id: user_id}, message_id: message_id} = message}, context) do
     with {:ok, meme_id, meme_unique_id, meme_type} <- Utils.get_meme_from_message(message),
          {{:ok, %Meme{}}, meme_info} <-
