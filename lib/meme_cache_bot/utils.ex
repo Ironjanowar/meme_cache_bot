@@ -26,7 +26,7 @@ defmodule MemeCacheBot.Utils do
   def generate_buttons(meme_uuid, :delete),
     do: ExGram.Dsl.create_inline([[[text: "Yes", callback_data: "delete:#{meme_uuid}"]]])
 
-  def help_command() do
+  def help_command do
     """
     Send me a meme in any of these formats:
      - Sticker
@@ -40,7 +40,7 @@ defmodule MemeCacheBot.Utils do
     """
   end
 
-  def about_command() do
+  def about_command do
     """
     This bot was made by [@Ironjanowar](https://github.com/Ironjanowar) with :heart:
 
