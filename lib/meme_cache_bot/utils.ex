@@ -42,9 +42,9 @@ defmodule MemeCacheBot.Utils do
 
   def about_command do
     """
-    This bot was made by [@Ironjanowar](https://github.com/Ironjanowar) with :heart:
+    __This bot was made by [@Ironjanowar](https://github.com/Ironjanowar) with ❤️__
 
-    If you want to share some love and give a star :star: to the repo [here it is](https://github.com/Ironjanowar/meme_cache_bot)
+    If you want to share some love and give a star ⭐️ to the repo [here it is](https://github.com/Ironjanowar/meme_cache_bot)
     """
   end
 end
