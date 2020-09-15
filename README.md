@@ -11,10 +11,10 @@ Send a meme in any of these formats:
  - Video
 
 If you don't have the meme saved, the bot will ask if you want to save it
-![Save Button][/docs/images/save_button.png]
+![Save Button](./docs/images/save_button.png)
 
 If you have the meme saved, the bot will ask if you want to delete it
-![Delete Button][/docs/images/delete_button.png]
+![Delete Button](./docs/images/delete_button.png)
 
 ## Deploy your own meme bot
 
