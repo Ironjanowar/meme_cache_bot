@@ -57,10 +57,4 @@ defmodule MemeCacheBot.Utils do
       _ -> 0
     end
   end
-
-  def format_count_message(count) do
-    """
-    You have saved *#{count}* memes in total!
-    """
-  end
 end

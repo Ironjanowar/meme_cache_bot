@@ -35,7 +35,9 @@ defmodule MemeCacheBot.Bot do
   end
 
   def handle({:command, :count, %{from: %{id: user_id}}}, context) do
-    message = Meme.count_memes_by_user(user_id) |> elem(1) |> Utils.format_count_message()
+    message =
+      Meme.count_memes_by_user(user_id) |> elem(1) |> MessageFormatter.format_count_message()
+
     answer(context, message, parse_mode: "Markdown")
   end
 

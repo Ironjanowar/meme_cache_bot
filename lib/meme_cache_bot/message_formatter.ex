@@ -41,4 +41,10 @@ defmodule MemeCacheBot.MessageFormatter do
         :invalid_meme
     end
   end
+
+  def format_count_message(count) do
+    """
+    You have saved *#{count}* memes in total!
+    """
+  end
 end
