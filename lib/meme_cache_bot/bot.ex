@@ -4,7 +4,8 @@ defmodule MemeCacheBot.Bot do
   require Logger
 
   use ExGram.Bot,
-    name: @bot
+    name: @bot,
+    setup_commands: true
 
   middleware(ExGram.Middleware.IgnoreUsername)
   middleware(MemeCacheBot.Middlewares.RegisterUser)
