@@ -17,16 +17,28 @@ defmodule MemeCacheBot.Bot do
 
   def bot, do: @bot
 
-  def handle({:command, "start", _msg}, context) do
+  command("start", description: "Says hi!")
+  command("help", description: "Sends some help")
+  command("about", description: "Who made the bot")
+  command("count", description: "How many memes have you saved?")
+
+  def handle({:command, :start, _msg}, context) do
     answer(context, "Hi!")
   end
 
-  def handle({:command, "help", _msg}, context) do
+  def handle({:command, :help, _msg}, context) do
     answer(context, Utils.help_command())
   end
 
-  def handle({:command, "about", _msg}, context) do
+  def handle({:command, :about, _msg}, context) do
     answer(context, Utils.about_command(), parse_mode: "Markdown")
+  end
+
+  def handle({:command, :count, %{from: %{id: user_id}}}, context) do
+    message =
+      Meme.count_memes_by_user(user_id) |> elem(1) |> MessageFormatter.format_count_message()
+
+    answer(context, message, parse_mode: "Markdown")
   end
 
   def handle({:message, %{from: %{id: user_id}, message_id: message_id} = message}, context) do
@@ -81,8 +93,10 @@ defmodule MemeCacheBot.Bot do
     Logger.debug("Could not extract a user from this message: #{inspect(m)}")
   end
 
-  def handle({:inline_query, %{query: _text, from: %{id: user_id}}}, context) do
-    case Meme.get_memes_by_user(user_id) do
+  def handle({:inline_query, %{query: text, from: %{id: user_id}}}, context) do
+    page = Utils.get_page_from_message(text)
+
+    case Meme.get_memes_by_user(user_id, page) do
       {:ok, memes} ->
         articles =
           Enum.map(memes, &MessageFormatter.get_inline_result/1)

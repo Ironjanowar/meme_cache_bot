@@ -22,7 +22,7 @@ defmodule MemeCacheBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_gram, "~> 0.14"},
+      {:ex_gram, "~> 0.15"},
       {:tesla, "~> 1.2"},
       {:hackney, "~> 1.12"},
       {:jason, ">= 1.0.0"},

@@ -45,9 +45,24 @@ defmodule MemeCacheBot.Model.Meme do
     end
   end
 
-  def get_memes_by_user(telegram_id) do
-    q = from(m in Meme, where: m.telegram_id == ^telegram_id, order_by: [desc: m.last_used])
+  def get_memes_by_user(telegram_id, page \\ 0) do
+    offset = page_to_offset(page)
+
+    q =
+      from(m in Meme,
+        where: m.telegram_id == ^telegram_id,
+        order_by: [desc: m.last_used],
+        limit: 50,
+        offset: ^offset
+      )
+
     {:ok, Repo.all(q)}
+  end
+
+  def count_memes_by_user(telegram_id) do
+    q = from(m in Meme, where: m.telegram_id == ^telegram_id, select: count(m.meme_id))
+
+    {:ok, Repo.one(q)}
   end
 
   def get_meme_by_user_and_id(telegram_id, meme_unique_id) do
@@ -76,4 +91,8 @@ defmodule MemeCacheBot.Model.Meme do
     from(m in Meme, where: m.telegram_id == ^telegram_id and m.meme_unique_id == ^meme_unique_id)
     |> Repo.update_all(set: [last_used: Utils.date_now()])
   end
+
+  # Utils
+  defp page_to_offset(page) when page <= 0, do: 0
+  defp page_to_offset(page), do: (page - 1) * 50
 end
