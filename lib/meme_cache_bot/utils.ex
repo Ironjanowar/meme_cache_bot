@@ -15,6 +15,9 @@ defmodule MemeCacheBot.Utils do
   def get_meme_from_message(%{video: %{file_unique_id: meme_unique_id, file_id: meme_id}}),
     do: {:ok, meme_id, meme_unique_id, "video"}
 
+  def get_meme_from_message(%{voice: %{file_unique_id: meme_unique_id, file_id: meme_id}}),
+    do: {:ok, meme_id, meme_unique_id, "voice"}
+
   def get_meme_from_message(message) do
     Logger.debug("Unrecognized meme: #{inspect(message)}")
     {:error, :no_meme, message}
@@ -45,6 +48,19 @@ defmodule MemeCacheBot.Utils do
     __This bot was made by [@Ironjanowar](https://github.com/Ironjanowar) with ❤️__
 
     If you want to share some love and give a star ⭐️ to the repo [here it is](https://github.com/Ironjanowar/meme_cache_bot)
+    """
+  end
+
+  def get_page_from_message(text) do
+    case Integer.parse(text) do
+      {page, _} -> page
+      _ -> 0
+    end
+  end
+
+  def format_count_message(count) do
+    """
+    You have saved *#{count}* memes in total!
     """
   end
 end

@@ -5,12 +5,16 @@ defmodule MemeCacheBot.MessageFormatter do
     InlineQueryResultCachedGif,
     InlineQueryResultCachedPhoto,
     InlineQueryResultCachedSticker,
-    InlineQueryResultCachedVideo
+    InlineQueryResultCachedVideo,
+    InlineQueryResultCachedVoice
   }
 
   defp type_struct("gif"), do: {:ok, InlineQueryResultCachedGif, :gif_file_id, %{}}
   defp type_struct("photo"), do: {:ok, InlineQueryResultCachedPhoto, :photo_file_id, %{}}
   defp type_struct("sticker"), do: {:ok, InlineQueryResultCachedSticker, :sticker_file_id, %{}}
+
+  defp type_struct("voice"),
+    do: {:ok, InlineQueryResultCachedVoice, :voice_file_id, %{title: "Voice Message Meme"}}
 
   defp type_struct("video"),
     do: {:ok, InlineQueryResultCachedVideo, :video_file_id, %{title: "Meme"}}
