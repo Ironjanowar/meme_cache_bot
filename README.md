@@ -18,7 +18,7 @@ If you have the meme saved, the bot will ask if you want to delete it
 
 Once you have a meme saved, you just need to use the bot inline. Write in any chat `@meme_cache_bot` and It will show you your cached memes!
 
-<img src="./docs/images/use_inline.jpg" width="150">
+<img src="./docs/images/use_inline.jpg" width="400">
 
 ### Pagination
 
