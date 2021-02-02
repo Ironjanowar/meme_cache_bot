@@ -92,6 +92,11 @@ defmodule MemeCacheBot.Model.Meme do
     |> Repo.update_all(set: [last_used: Utils.date_now()])
   end
 
+  def get_memes_count do
+    q = from(m in Meme, select: count(m.id))
+    Repo.one(q)
+  end
+
   # Utils
   defp page_to_offset(page) when page <= 0, do: 0
   defp page_to_offset(page), do: (page - 1) * 50

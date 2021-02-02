@@ -47,4 +47,7 @@ defmodule MemeCacheBot.MessageFormatter do
     You have saved *#{count}* memes in total!
     """
   end
+
+  def format_meme_master(meme_master) when is_nil(meme_master), do: "No meme master :("
+  def format_meme_master(meme_master), do: "Da Meme Master: @#{meme_master.username}"
 end

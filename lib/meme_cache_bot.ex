@@ -1,18 +1,23 @@
 defmodule MemeCacheBot do
-  @moduledoc """
-  Documentation for MemeCacheBot.
-  """
+  alias MemeCacheBot.Model.{User, Meme}
+  alias MemeCacheBot.MessageFormatter
 
-  @doc """
-  Hello world.
+  def get_stats do
+    %{
+      users_count: User.get_users_count(),
+      memes_count: Meme.get_memes_count(),
+      meme_master: User.get_meme_master()
+    }
+  end
 
-  ## Examples
+  def get_stats_message do
+    stats = get_stats()
 
-      iex> MemeCacheBot.hello()
-      :world
+    """
+    Total users: **#{stats.users_count}**
+    Total memes: **#{stats.memes_count}**
 
-  """
-  def hello do
-    :world
+    #{MessageFormatter.format_meme_master(stats.meme_master)}
+    """
   end
 end

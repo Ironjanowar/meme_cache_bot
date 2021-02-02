@@ -152,6 +152,14 @@ defmodule MemeCacheBot.Bot do
     Meme.update_last_used(user_id, meme_unique_id)
   end
 
+  # Admins only
+  def handle({:command, "stats", %{from: %{id: user_id}}}, context) do
+    if Utils.is_admin(user_id) do
+      stats_message = MemeCacheBot.get_stats_message()
+      answer(context, stats_message, parse_mode: "Markdown")
+    end
+  end
+
   def handle(_, _), do: :ignore
   def handle(_), do: :ignore
 end

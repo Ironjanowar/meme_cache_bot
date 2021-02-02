@@ -8,6 +8,7 @@ compile: deps
 
 token:
 export BOT_TOKEN = $(shell cat bot.token)
+export ADMINS = $(shell cat admins)
 
 start: token
 	_build/dev/rel/meme_cache_bot/bin/meme_cache_bot daemon

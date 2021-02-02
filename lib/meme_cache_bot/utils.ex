@@ -57,4 +57,19 @@ defmodule MemeCacheBot.Utils do
       _ -> 0
     end
   end
+
+  def is_admin(user_id) do
+    case ExGram.Config.get(:meme_cache_bot, :admins) |> Jason.decode() do
+      {:ok, admins} ->
+        Logger.debug("admins: #{inspect(admins)}")
+        user_id in admins
+
+      _ ->
+        Logger.error(
+          "The admins env var may be not correctly configurated, the format should be an array of strings. For example: [\"admin\", \"admin2\"]"
+        )
+
+        false
+    end
+  end
 end

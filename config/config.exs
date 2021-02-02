@@ -11,6 +11,9 @@ config :meme_cache_bot, MemeCacheBot.Repo,
 config :meme_cache_bot,
   ecto_repos: [MemeCacheBot.Repo]
 
+config :meme_cache_bot,
+  admins: {:system, "ADMINS"}
+
 config :ex_gram,
   token: {:system, "BOT_TOKEN"}
 
