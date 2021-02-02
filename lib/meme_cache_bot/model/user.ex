@@ -54,7 +54,7 @@ defmodule MemeCacheBot.Model.User do
         limit: 1
       )
 
-    q = from(u in User, select: %{user: u}, join: subquery(subq))
+    q = from(u in User, select: %{user: u}, join: subquery(subq), limit: 1)
 
     case Repo.one(q) do
       %{user: user} -> user
