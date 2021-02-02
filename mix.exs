@@ -22,13 +22,13 @@ defmodule MemeCacheBot.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:ex_gram, "~> 0.15"},
-      {:tesla, "~> 1.2"},
-      {:hackney, "~> 1.12"},
-      {:jason, ">= 1.0.0"},
+      {:ex_gram, "~> 0.21"},
+      {:tesla, "~> 1.4"},
+      {:hackney, "~> 1.17"},
+      {:jason, "~> 1.2"},
       {:logger_file_backend, "0.0.11"},
-      {:ecto_sql, "~> 3.0"},
-      {:postgrex, ">= 0.0.0"},
+      {:ecto_sql, "~> 3.5"},
+      {:postgrex, "~> 0.15"},
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
       {:uuid, "~> 1.1"}
     ]
