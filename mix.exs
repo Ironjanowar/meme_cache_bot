@@ -26,11 +26,12 @@ defmodule MemeCacheBot.MixProject do
       {:tesla, "~> 1.4"},
       {:hackney, "~> 1.17"},
       {:jason, "~> 1.2"},
-      {:logger_file_backend, "0.0.11"},
       {:ecto_sql, "~> 3.5"},
       {:postgrex, "~> 0.15"},
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:logger_json_file_backend,
+       github: "xflagstudio/elixir_logger_json_file_backend", tag: "0.1.9"}
     ]
   end
 end
